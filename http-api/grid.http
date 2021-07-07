@@ -1,0 +1,6 @@
+@hostname = localhost
+@port = 8000
+@host = {{hostname}}:{{port}}
+
+### get grid
+GET  http://{{host}}/api/grid/
