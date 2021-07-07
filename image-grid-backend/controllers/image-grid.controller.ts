@@ -1,38 +1,38 @@
+import GridInterface from "../interfaces/grid.interface";
 import ImageInterface from "../interfaces/image.interface";
-import {ImageGridDao} from "../model/image-grid-dao";
+import { ImageGridDao } from "../model/image-grid-dao";
 class ImageGridController {
-    
   /**
    * get saved grid
    * @returns image list
    */
-  getGrid = async (): Promise<ImageInterface[]> => {
-    const grid = await ImageGridDao.find();
-    console.log("GRIDDDD ",grid);
-    return grid;
+  getGrid = async (): Promise<GridInterface> => {
+    const gridImages = await ImageGridDao.find();
+    return gridImages[0];
   };
 
-    /**
+  /**
    * Create the grid
    * @param data
    * @returns created grid
    */
-     createGrid = async (
-      data: ImageInterface []
-    ): Promise<ImageInterface [] | Boolean> => {
-      try {
-        let finalGrid : ImageInterface [] = [];
-        data.forEach(async element => {
-          const gridDao = new ImageGridDao(element);
+  createGrid = async (
+    data: GridInterface
+  ): Promise<GridInterface | Boolean> => {
+    try {
+      await ImageGridDao.remove();
+      try{
+        const gridDao = new ImageGridDao(data);
         const gridImage = await gridDao.save();
-        console.log("gridImage",gridImage);
-        finalGrid.push(gridImage);
-        });
-        return finalGrid;
-      } catch (err) {
+        return gridImage;
+      }catch(err){
         return false;
       }
-    };
+      
+    } catch (err) {
+      return false;
+    }
+  };
 }
 
 export default new ImageGridController();
