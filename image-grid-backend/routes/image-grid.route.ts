@@ -1,6 +1,7 @@
 // var express = require('express')
 import express, { Request, Response } from "express";
 import ImageGridController from "../controllers/image-grid.controller";
+import GridInterface from "../interfaces/grid.interface";
 import ImageInterface from "../interfaces/image.interface";
 var router = express.Router();
 
@@ -31,7 +32,7 @@ router.get("/", async function (req: Request, res: Response) {
  * Add Grid
  */
  router.post("/", async function (req: Request, res: Response) {
-  const data: ImageInterface [] = req.body;
+  const data: GridInterface = req.body;
   const grid = await ImageGridController.createGrid(data);
   // console.log("creating this record grid", grid);
   if (grid) {

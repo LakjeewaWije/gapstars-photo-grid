@@ -1,5 +1,6 @@
 import ImageInterface from "../interfaces/image.interface";
 import { Schema, model } from "mongoose";
+import GridInterface from "../interfaces/grid.interface";
 const ImageSchema = new Schema<ImageInterface>(
     {
       id: { type: Number, required: true },
@@ -11,5 +12,11 @@ const ImageSchema = new Schema<ImageInterface>(
       timestamp: { type: Date, required: true }
     },
   );
+
+  const GridSchema = new Schema<GridInterface>(
+    {
+      images: { type: [ImageSchema], required: true }
+    },
+  );
   
-  export const ImageGridDao = model<ImageInterface>("images", ImageSchema);
+  export const ImageGridDao = model<GridInterface>("grids", GridSchema);
