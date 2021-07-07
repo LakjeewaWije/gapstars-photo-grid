@@ -1,0 +1,38 @@
+@hostname = localhost
+@port = 8000
+@host = {{hostname}}:{{port}}
+
+### get grid
+GET  http://{{host}}/api/grid/
+
+### create the grid
+POST http://{{host}}/api/grid/
+content-type: application/json
+
+[{
+            "id": 204900006,
+            "message": "",
+            "picture": "https://placeimg.com/2560/2560/any",
+            "pictureSmall": "",
+            "pictureMedium": "",
+            "pictureStored": "",
+            "timestamp": 1578391381
+        },
+    {
+    "id": 204900003,
+    "message": "",
+    "picture": "https://placeimg.com/2560/2560/any",
+    "pictureSmall": "",
+    "pictureMedium": "",
+    "pictureStored": "",
+    "timestamp": 1578391381
+},{
+            "id": 204900005,
+            "message": "",
+            "picture": "https://placeimg.com/2560/2560/any",
+            "pictureSmall": "",
+            "pictureMedium": "",
+            "pictureStored": "",
+            "timestamp": 1578391381
+        }
+]
