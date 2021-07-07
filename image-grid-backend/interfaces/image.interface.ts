@@ -5,7 +5,7 @@ interface ImageInterface {
   pictureSmall: string;
   pictureMedium: string;
   pictureStored: string;
-  timestamp: string;
+  timestamp: Date;
   }
    
   export default ImageInterface;
