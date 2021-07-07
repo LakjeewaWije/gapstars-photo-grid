@@ -2,9 +2,7 @@ import React, { useEffect, useState } from "react";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import ImageInterface from "../interfaces/image.interface";
 import { Box, Button } from "@material-ui/core";
-
-
-
+import { useHistory } from "react-router-dom";
 // a little function to help us with reordering the result
 const reorder = (list: any, startIndex: any, endIndex: any) => {
   const result = Array.from(list);
@@ -53,85 +51,109 @@ const getItemStyle = (isDragging: any, draggableStyle: any) => ({
 
 function EditGrid() {
   const [items, setImages] = useState<ImageInterface[] | []>([]);
-    const [selected, setselected] = useState<ImageInterface[] | []>([]);
-  
-    useEffect(() => {
-        getImages();
-      }, []);
+  const [selected, setselected] = useState<ImageInterface[] | []>([]);
+  const history = useHistory();
+  useEffect(() => {
+    getImages();
+  }, []);
+
+  const getImages = async () => {
+    const rawData = await fetch(
+      "https://dev-pb-apps.s3-eu-west-1.amazonaws.com/collection/CHhASmTpKjaHyAsSaauThRqMMjWanYkQ.json"
+    );
+    const data = await rawData.json();
+    const images: ImageInterface[] = data.entries;
+    console.log("Fetched data ", data);
+    setImages(images);
+  };
+
+  const saveSelectedImages = async (images: ImageInterface[]) => {
     
-    const getImages = async () => {
-        const rawData = await fetch(
-          "https://dev-pb-apps.s3-eu-west-1.amazonaws.com/collection/CHhASmTpKjaHyAsSaauThRqMMjWanYkQ.json"
-        );
-        const data = await rawData.json();
-        const images: ImageInterface[] = data.entries;
-        console.log("Fetched data ", data);
-        setImages(images);
-      };
+    const URL = "http://localhost:8000/api/grid";
+    const res = await fetch(URL, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({"images": images}),
+    });
+    const data = await res.json();
+    console.log("Data is saved ",data);
+    if (data.images.length > 0){
+      history.push("/");
+    }else{
+      alert("Couldn't save your grid try again!");
+    }
+  };
 
-    const getList = (id: any) => id === "droppable" ? items: selected; // this.state[this.id2List[id]]; 
-  
-    const onDragEnd = (result: any) => {
-      const { source, destination } = result;
-  
-      // dropped outside the list
-      if (!destination) {
-        return;
-      }
-  
-      if (source.droppableId === destination.droppableId) {
-        const items :any = reorder(
-          getList(source.droppableId),
-          source.index,
-          destination.index
-        );
-  
-        if (source.droppableId === "droppable2") {
-          setselected(items)
-        }else{
-            setImages(items)
-        }
+  const getList = (id: any) => (id === "droppable" ? items : selected); // this.state[this.id2List[id]];
+
+  const onDragEnd = (result: any) => {
+    const { source, destination } = result;
+
+    // dropped outside the list
+    if (!destination) {
+      return;
+    }
+
+    if (source.droppableId === destination.droppableId) {
+      const items: any = reorder(
+        getList(source.droppableId),
+        source.index,
+        destination.index
+      );
+
+      if (source.droppableId === "droppable2") {
+        setselected(items);
       } else {
-        const result = move(
-          getList(source.droppableId),
-          getList(destination.droppableId),
-          source,
-          destination
-        );
-        setImages(result.droppable)
-        setselected(result.droppable2)
+        setImages(items);
       }
-    };
-  
-    // Normally you would want to split things out into separate components.
-    // But in this example everything is just done in one place for simplicity
- 
-      return (
-        <div style={{display:"flex",justifyContent:"space-between"}}>
-          <DragDropContext onDragEnd={onDragEnd}>
+    } else {
+      const result = move(
+        getList(source.droppableId),
+        getList(destination.droppableId),
+        source,
+        destination
+      );
+      setImages(result.droppable);
+      setselected(result.droppable2);
+    }
+  };
 
+  // Normally you would want to split things out into separate components.
+  // But in this example everything is just done in one place for simplicity
 
-          <Box
-        display="flex"
-        p={3}
-        flexDirection="row"
-        m={1}
-        justifyContent="center"
-        bgcolor="background.paper"
-      >
-        <Box width="40%">
-          <div >Select From :</div>
-          <Droppable droppableId="droppable">
+  return (
+    <div style={{ display: "flex", justifyContent: "space-between" }}>
+      <DragDropContext onDragEnd={onDragEnd}>
+        <Box
+          display="flex"
+          p={3}
+          flexDirection="row"
+          m={1}
+          justifyContent="center"
+          bgcolor="background.paper"
+        >
+          <Box width="40%">
+            <div>Select From :</div>
+            <Droppable droppableId="droppable">
               {(provided, snapshot) => (
                 <div
                   ref={provided.innerRef}
-                  style={{background: "lightgrey",
-                  padding: grid,
-                  height: "90vh",overflowY: "auto"
+                  style={{
+                    background: "lightgrey",
+                    padding: grid,
+                    height: "90vh",
+                    overflowY: "auto",
                   }}
                 >
                   {items.map((item: ImageInterface, index: any) => (
-                    <Draggable key={item.id} draggableId={item.id.toString()} index={index}>
+                    <Draggable
+                      key={item.id}
+                      draggableId={item.id.toString()}
+                      index={index}
+                    >
                       {(provided, snapshot) => (
                         <div
                           ref={provided.innerRef}
@@ -143,7 +165,11 @@ function EditGrid() {
                           )}
                         >
                           {item.id}
-                          <img style={{width:"30%",padding:"1%"}}  src={item.picture} alt={item.message} />
+                          <img
+                            style={{ width: "30%", padding: "1%" }}
+                            src={item.picture}
+                            alt={item.message}
+                          />
                         </div>
                       )}
                     </Draggable>
@@ -152,21 +178,26 @@ function EditGrid() {
                 </div>
               )}
             </Droppable>
-            
-        </Box>
-        <Box width="60%">
-          <div>Drop Here :</div>
-          <Droppable droppableId="droppable2">
+          </Box>
+          <Box width="60%">
+            <div>Drop Here :</div>
+            <Droppable droppableId="droppable2">
               {(provided, snapshot) => (
                 <div
                   ref={provided.innerRef}
-                  style={{background: "lightgrey",
-                  padding: grid,
-                  height: "70vh",
-                  overflowY: "auto"}}
+                  style={{
+                    background: "lightgrey",
+                    padding: grid,
+                    height: "70vh",
+                    overflowY: "auto",
+                  }}
                 >
                   {selected.map((item: any, index: any) => (
-                    <Draggable key={item.id} draggableId={item.id.toString()} index={index}>
+                    <Draggable
+                      key={item.id}
+                      draggableId={item.id.toString()}
+                      index={index}
+                    >
                       {(provided, snapshot) => (
                         <div
                           ref={provided.innerRef}
@@ -178,7 +209,11 @@ function EditGrid() {
                           )}
                         >
                           {item.id}
-                          <img style={{width:"30%",padding:"1%"}}  src={item.picture} alt={item.message} />
+                          <img
+                            style={{ width: "30%", padding: "1%" }}
+                            src={item.picture}
+                            alt={item.message}
+                          />
                         </div>
                       )}
                     </Draggable>
@@ -187,22 +222,24 @@ function EditGrid() {
                 </div>
               )}
             </Droppable>
-            <div style={{textAlign:"center",padding:5}}>
-            <Button
-                  color="primary"
-                  variant="contained"
-                  onClick={() => {console.log("Save selected items ",selected)}}
-                >Save</Button>
+            <div style={{ textAlign: "center", padding: 5 }}>
+              <Button
+                color="primary"
+                variant="contained"
+                disabled={selected.length === 0}
+                onClick={() => {
+                  console.log("Save selected items ", selected);
+                  saveSelectedImages(selected);
+                }}
+              >
+                Save
+              </Button>
             </div>
-            
+          </Box>
         </Box>
-      </Box>
-      
-            
-            
-          </DragDropContext>
-        </div>
-      );
+      </DragDropContext>
+    </div>
+  );
 }
 
 export default EditGrid;
