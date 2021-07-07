@@ -2,7 +2,7 @@ import ImageInterface from "../interfaces/image.interface";
 import { Schema, model } from "mongoose";
 const ImageSchema = new Schema<ImageInterface>(
     {
-      id: { type: String, required: true },
+      id: { type: Number, required: true },
       message: { type: String},
       picture: { type: String, required: true },
       pictureSmall: { type: String},
@@ -12,4 +12,4 @@ const ImageSchema = new Schema<ImageInterface>(
     },
   );
   
-  export const ImageGridDao = model<ImageInterface>("grid", ImageSchema);
+  export const ImageGridDao = model<ImageInterface>("images", ImageSchema);

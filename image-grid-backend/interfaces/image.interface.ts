@@ -1,5 +1,5 @@
 interface ImageInterface {
-  id: string;
+  id: number;
   message: string;
   picture: string;
   pictureSmall: string;
