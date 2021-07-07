@@ -1,4 +1,5 @@
 import express from "express";
+import { DatabaseMongoDB } from "./providers/Database.provider.mongodb";
 var bodyParser = require("body-parser");
 var cors = require("cors");
 // initiate express instance
@@ -14,6 +15,9 @@ app.use(bodyParser.json());
 // routes
 var imageGridRoutes = require('./routes/image-grid.route');
 app.use('/api/grid', imageGridRoutes);
+
+// initialize mongo db
+DatabaseMongoDB.init();
 
 // defualt route
 app.get("/", (req, res) => res.send("Gapstars ImageGrid Server v0.1"));
