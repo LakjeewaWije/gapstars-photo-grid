@@ -68,7 +68,6 @@ function EditGrid() {
   };
 
   const saveSelectedImages = async (images: ImageInterface[]) => {
-    
     const URL = "http://localhost:8000/api/grid";
     const res = await fetch(URL, {
       method: "POST",
@@ -76,13 +75,13 @@ function EditGrid() {
         Accept: "application/json",
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({"images": images}),
+      body: JSON.stringify({ images: images }),
     });
     const data = await res.json();
-    console.log("Data is saved ",data);
-    if (data.images.length > 0){
+    console.log("Data is saved ", data);
+    if (data.images.length > 0) {
       history.push("/");
-    }else{
+    } else {
       alert("Couldn't save your grid try again!");
     }
   };
