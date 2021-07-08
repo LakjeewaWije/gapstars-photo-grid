@@ -41,10 +41,10 @@ const getItemStyle = (isDragging: any, draggableStyle: any) => ({
   // some basic styles to make the items look a bit nicer
   userSelect: "none",
   padding: grid * 2,
-  margin: `0 0 ${grid}px 0`,
-
+  margin: `0 0 5px 0`,
+  textAlign : 'center',
   // change background colour if dragging
-  background: isDragging ? "lightgreen" : "grey",
+  // background: isDragging ? "lightgreen" : "grey",
 
   // styles we need to apply on draggables
   ...draggableStyle,
@@ -71,8 +71,8 @@ function EditGrid() {
 
   useEffect(() => {
     console.log("Check for repeated items");
-    if (items.length > 0) {
-      if (selected.length > 0) {
+    if (items?.length > 0) {
+      if (selected?.length > 0) {
         console.log("Here a difference");
         let arraytmp = items;
         selected.forEach((val, index) => {
@@ -116,11 +116,12 @@ function EditGrid() {
     });
     const data = await res.json();
     console.log("Data is saved ", data);
-    if (data.images.length > 0) {
-      history.push("/");
-    } else {
-      alert("Removed your favs!");
-    }
+    history.push("/");
+    // if (data.images.length > 0) {
+    //   history.push("/");
+    // } else {
+    //   alert("Removed your favs!");
+    // }
   };
 
   const getList = (id: any) => (id === "droppable" ? items : selected);
@@ -181,7 +182,7 @@ function EditGrid() {
                     overflowY: "auto",
                   }}
                 >
-                  {items.map((item: ImageInterface, index: any) => (
+                  {items?.map((item: ImageInterface, index: any) => (
                     <Draggable
                       key={item.id}
                       draggableId={item.id.toString()}
@@ -197,9 +198,9 @@ function EditGrid() {
                             provided.draggableProps.style
                           )}
                         >
-                          {item.id}
+                          <p>id : {item.id}</p>
                           <img
-                            style={{ width: "30%", padding: "1%" }}
+                            style={{ width: 150, padding: "1%" }}
                             src={item.picture}
                             alt={item.message}
                           />
@@ -221,9 +222,11 @@ function EditGrid() {
                   className="grid-container"
                   style={{
                     minHeight: "30vh",
+                    maxHeight: "75vh",
+                    overflowY: "auto",
                   }}
                 >
-                  {selected.map((item: any, index: any) => (
+                  {selected?.map((item: any, index: any) => (
                     <Draggable
                       key={item.id}
                       draggableId={item.id.toString()}
@@ -236,9 +239,9 @@ function EditGrid() {
                           {...provided.draggableProps}
                           {...provided.dragHandleProps}
                         >
-                          {item.id}
+                          id : {item.id}
                           <img
-                            style={{ width: "30%", padding: "1%" }}
+                            style={{ width: 120, padding: "1%" }}
                             src={item.picture}
                             alt={item.message}
                           />
@@ -274,7 +277,7 @@ function EditGrid() {
               </Button>
               <p style={{ color: "InfoText" }}>
                 Instructions: Drag and drop your favourites images from left
-                panel to right panel , also make sure to save :)
+                panel to right panel or remove by other way around, also make sure to save :)
               </p>
             </div>
           </Box>
