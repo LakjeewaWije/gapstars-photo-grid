@@ -7,7 +7,8 @@ function ImageGrid() {
   const history = useHistory();
   const [images, setImages] = useState<ImageInterface[] | []>([]);
   const getSavedImages = async () => {
-    const URL = "http://localhost:8000/api/grid";
+    // process.env.BASE_URL;
+    const URL = `${process.env.REACT_APP_BASE_URL}/api/grid`;
     const rawData = await fetch(URL);
     const data = await rawData.json();
     const images: ImageInterface[] = data.images;
