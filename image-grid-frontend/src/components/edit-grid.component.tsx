@@ -56,7 +56,7 @@ function EditGrid() {
   const history = useHistory();
 
   const getSavedImages = async () => {
-    const URL = "http://localhost:8000/api/grid";
+    const URL = `${process.env.REACT_APP_BASE_URL}/api/grid`;
     const rawData = await fetch(URL);
     const data = await rawData.json();
     const images: ImageInterface[] = data.images;
@@ -91,6 +91,9 @@ function EditGrid() {
     });
   }
 
+  /**
+   * Get all the images added by user
+   */
   const getImages = async () => {
     const rawData = await fetch(
       "https://dev-pb-apps.s3-eu-west-1.amazonaws.com/collection/CHhASmTpKjaHyAsSaauThRqMMjWanYkQ.json"
@@ -102,7 +105,7 @@ function EditGrid() {
   };
 
   const saveSelectedImages = async (images: ImageInterface[]) => {
-    const URL = "http://localhost:8000/api/grid";
+    const URL = `${process.env.REACT_APP_BASE_URL}/api/grid`;
     const res = await fetch(URL, {
       method: "POST",
       headers: {
