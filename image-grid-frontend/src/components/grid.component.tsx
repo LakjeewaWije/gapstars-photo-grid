@@ -45,7 +45,7 @@ function ImageGrid() {
       </Box>
       <Box flexDirection="column">
         <div className="grid-container">
-          {images.length ? images.map((val, ind) => (
+          {images?.length ? images.map((val, ind) => (
             <div key={ind} className="grid-item">
               <p>
                 {ind + 1} . {val.id}

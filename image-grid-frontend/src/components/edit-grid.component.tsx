@@ -71,8 +71,8 @@ function EditGrid() {
 
   useEffect(() => {
     console.log("Check for repeated items");
-    if (items.length > 0) {
-      if (selected.length > 0) {
+    if (items?.length > 0) {
+      if (selected?.length > 0) {
         console.log("Here a difference");
         let arraytmp = items;
         selected.forEach((val, index) => {
@@ -116,11 +116,12 @@ function EditGrid() {
     });
     const data = await res.json();
     console.log("Data is saved ", data);
-    if (data.images.length > 0) {
-      history.push("/");
-    } else {
-      alert("Removed your favs!");
-    }
+    history.push("/");
+    // if (data.images.length > 0) {
+    //   history.push("/");
+    // } else {
+    //   alert("Removed your favs!");
+    // }
   };
 
   const getList = (id: any) => (id === "droppable" ? items : selected);
@@ -181,7 +182,7 @@ function EditGrid() {
                     overflowY: "auto",
                   }}
                 >
-                  {items.map((item: ImageInterface, index: any) => (
+                  {items?.map((item: ImageInterface, index: any) => (
                     <Draggable
                       key={item.id}
                       draggableId={item.id.toString()}
@@ -225,7 +226,7 @@ function EditGrid() {
                     overflowY: "auto",
                   }}
                 >
-                  {selected.map((item: any, index: any) => (
+                  {selected?.map((item: any, index: any) => (
                     <Draggable
                       key={item.id}
                       draggableId={item.id.toString()}
