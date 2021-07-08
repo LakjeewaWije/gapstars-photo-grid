@@ -3,6 +3,7 @@ import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import ImageInterface from "../interfaces/image.interface";
 import { Box, Button } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
+
 // a little function to help us with reordering the result
 const reorder = (list: any, startIndex: any, endIndex: any) => {
   const result = Array.from(list);
@@ -53,9 +54,42 @@ function EditGrid() {
   const [items, setImages] = useState<ImageInterface[] | []>([]);
   const [selected, setselected] = useState<ImageInterface[] | []>([]);
   const history = useHistory();
+
+  const getSavedImages = async () => {
+    const URL = "http://localhost:8000/api/grid";
+    const rawData = await fetch(URL);
+    const data = await rawData.json();
+    const images: ImageInterface[] = data.images;
+    console.log("Fetched data ", images);
+    setselected(images);
+  };
+
   useEffect(() => {
+    getSavedImages();
     getImages();
   }, []);
+
+  useEffect(() => {
+    console.log("Check for repeated items");
+    if (items.length > 0) {
+      if (selected.length > 0) {
+        console.log("Here a difference");
+        let arraytmp = items;
+        selected.forEach((val, index) => {
+          arraytmp = arrayRemove(arraytmp, val.id);
+        });
+        setImages(arraytmp);
+      } else {
+      }
+    } else {
+    }
+  }, [selected]);
+
+  function arrayRemove(arr: any, value: any) {
+    return arr.filter(function (ele: any) {
+      return ele.id != value;
+    });
+  }
 
   const getImages = async () => {
     const rawData = await fetch(
@@ -82,11 +116,11 @@ function EditGrid() {
     if (data.images.length > 0) {
       history.push("/");
     } else {
-      alert("Couldn't save your grid try again!");
+      alert("Removed your favs!");
     }
   };
 
-  const getList = (id: any) => (id === "droppable" ? items : selected); // this.state[this.id2List[id]];
+  const getList = (id: any) => (id === "droppable" ? items : selected);
 
   const onDragEnd = (result: any) => {
     const { source, destination } = result;
@@ -120,9 +154,6 @@ function EditGrid() {
     }
   };
 
-  // Normally you would want to split things out into separate components.
-  // But in this example everything is just done in one place for simplicity
-
   return (
     <div style={{ display: "flex", justifyContent: "space-between" }}>
       <DragDropContext onDragEnd={onDragEnd}>
@@ -135,7 +166,7 @@ function EditGrid() {
           bgcolor="background.paper"
         >
           <Box width="40%">
-            <div>Select From :</div>
+            <div>Drag Images From :</div>
             <Droppable droppableId="droppable">
               {(provided, snapshot) => (
                 <div
@@ -184,11 +215,9 @@ function EditGrid() {
               {(provided, snapshot) => (
                 <div
                   ref={provided.innerRef}
+                  className="grid-container"
                   style={{
-                    background: "lightgrey",
-                    padding: grid,
-                    height: "70vh",
-                    overflowY: "auto",
+                    minHeight: "30vh",
                   }}
                 >
                   {selected.map((item: any, index: any) => (
@@ -199,13 +228,10 @@ function EditGrid() {
                     >
                       {(provided, snapshot) => (
                         <div
+                          className="grid-item"
                           ref={provided.innerRef}
                           {...provided.draggableProps}
                           {...provided.dragHandleProps}
-                          style={getItemStyle(
-                            snapshot.isDragging,
-                            provided.draggableProps.style
-                          )}
                         >
                           {item.id}
                           <img
@@ -221,11 +247,11 @@ function EditGrid() {
                 </div>
               )}
             </Droppable>
-            <div style={{ textAlign: "center", padding: 5 }}>
+            <div style={{ textAlign: "center", padding: 5, margin: 5 }}>
               <Button
                 color="primary"
+                style={{ margin: 4 }}
                 variant="contained"
-                disabled={selected.length === 0}
                 onClick={() => {
                   console.log("Save selected items ", selected);
                   saveSelectedImages(selected);
@@ -233,6 +259,20 @@ function EditGrid() {
               >
                 Save
               </Button>
+              <Button
+                color="primary"
+                style={{ margin: 4 }}
+                variant="contained"
+                onClick={() => {
+                  history.push("/");
+                }}
+              >
+                View Favourites
+              </Button>
+              <p style={{ color: "InfoText" }}>
+                Instructions: Drag and drop your favourites images from left
+                panel to right panel , also make sure to save :)
+              </p>
             </div>
           </Box>
         </Box>

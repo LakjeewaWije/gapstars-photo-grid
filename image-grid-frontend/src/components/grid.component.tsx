@@ -1,8 +1,10 @@
-import { Box } from "@material-ui/core";
+import { Box, Button } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 import ImageInterface from "../interfaces/image.interface";
 
 function ImageGrid() {
+  const history = useHistory();
   const [images, setImages] = useState<ImageInterface[] | []>([]);
   const getSavedImages = async () => {
     const URL = "http://localhost:8000/api/grid";
@@ -28,17 +30,28 @@ function ImageGrid() {
     >
       <Box>
         <h1 style={{ textAlign: "center" }}>Your Favourites!</h1>
+        <div style={{ textAlign: "end", padding: 5 }}>
+          <Button
+            color="primary"
+            variant="contained"
+            onClick={() => {
+              history.push("/edit");
+            }}
+          >
+            Edit Grid {"---->"}
+          </Button>
+        </div>
       </Box>
       <Box flexDirection="column">
-        <div style={{ textAlign: "center" }}>
-          {images.map((val, ind) => (
-            <span key={ind}>
+        <div className="grid-container">
+          {images.length ? images.map((val, ind) => (
+            <div key={ind} className="grid-item">
               <p>
                 {ind + 1} . {val.id}
               </p>
               <img src={val.picture} style={{ width: 200, padding: "1%" }} />
-            </span>
-          ))}
+            </div>
+          )): <p style={{ textAlign: "center" }}>No Favs to display :(</p>}
         </div>
       </Box>
     </Box>
