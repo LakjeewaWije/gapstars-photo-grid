@@ -56,7 +56,7 @@ function EditGrid() {
   const history = useHistory();
 
   const getSavedImages = async () => {
-    const URL = `${process.env.REACT_APP_BASE_URL}/api/grid`;
+    const URL = `/api/grid`;
     const rawData = await fetch(URL);
     const data = await rawData.json();
     const images: ImageInterface[] = data.images;
@@ -105,7 +105,7 @@ function EditGrid() {
   };
 
   const saveSelectedImages = async (images: ImageInterface[]) => {
-    const URL = `${process.env.REACT_APP_BASE_URL}/api/grid`;
+    const URL = `/api/grid`;
     const res = await fetch(URL, {
       method: "POST",
       headers: {

@@ -37,3 +37,14 @@ Created a single test case to check whether app component renders the intial pag
 ## Validations in front end
 
 Missing Restrict user only for 9 favourite images.
+
+
+## build using docker compose
+
+### to build and run 
+docker-compose up -d
+
+### to rebuild and run
+
+docker-compose build or docker-compose up --build
+

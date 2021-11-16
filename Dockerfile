@@ -14,6 +14,6 @@ RUN yarn && yarn build
 
 # Indicate port 80 should be exposed
 EXPOSE 80/tcp
-
+# EXPOSE 8042
 # Run
 CMD [ "yarn", "start:prod" ]

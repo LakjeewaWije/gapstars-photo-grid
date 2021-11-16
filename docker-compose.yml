@@ -1,0 +1,11 @@
+
+version: '3'
+
+services:
+  gapstars-app:
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+    image: "image-grid-app-compose"
+    ports:
+      - "80:8042"
